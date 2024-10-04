@@ -1,4 +1,8 @@
-Zadanie 1 NBD 2024/25
+# NBD
 
-Tycjan Lamkiewicz 
-Julia Nocuń
+## Working Group
+
+| Name Surname (initials) | 
+| ----------------------- |
+| Tycjan Lamkiewicz       |
+| Julia Nocuń             |
