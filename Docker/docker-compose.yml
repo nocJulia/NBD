@@ -2,16 +2,15 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:bullseye
+    image: postgres:17.0
     restart: always
     environment:
       POSTGRES_DB: nbddb
       POSTGRES_USER: nbd
       POSTGRES_PASSWORD: nbdpassword
     ports:
-      - 5432:5432
+      - 55555:5432
     volumes:
       - pg:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
   pg:
