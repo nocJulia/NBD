@@ -1,7 +1,14 @@
-package org.example;
+package org.example.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Biuro extends Lokal {
+
     private double kosztyDodatkowe;
+
+    // Bezargumentowy konstruktor wymagany przez JPA
+    public Biuro() {}
 
     public Biuro(double powierzchnia, double stawka, double kosztyDodatkowe) {
         super(powierzchnia, stawka);
@@ -25,7 +32,9 @@ public class Biuro extends Lokal {
 
     @Override
     public String informacja() {
+
         return "[Biuro] " + super.informacja() + " Koszty dodatkowe: " + kosztyDodatkowe;
     }
 }
+
 

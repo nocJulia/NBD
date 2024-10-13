@@ -1,12 +1,36 @@
-package org.example;
+package org.example.model;
+
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Budynek {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    private String nazwa;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "budynek")
     private List<Lokal> lokale;
 
     public Budynek() {
+        this.lokale = new ArrayList<>();
+    }
+
+    public Budynek(String nazwa) {
+        this.nazwa = nazwa;
         this.lokale = new ArrayList<>();
     }
 
