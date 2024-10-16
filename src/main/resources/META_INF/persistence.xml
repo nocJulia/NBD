@@ -17,7 +17,8 @@
       <property name="javax.persistence.jdbc.user" value="nbd" /> <!-- DB User -->
       <property name="javax.persistence.jdbc.password" value="nbdpassword" /> <!-- DB Password -->
       <property name="eclipselink. logging. level" value="FINE"/>
-      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
 </persistence>
+

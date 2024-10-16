@@ -14,6 +14,18 @@ public abstract class Lokal {
         return id;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "budynek_id") // Kolumna z kluczem obcym wskazującym na budynek
+    private Budynek budynek;
+
+    public Budynek getBudynek() {
+        return budynek;
+    }
+
+    public void setBudynek(Budynek budynek) {
+        this.budynek = budynek;
+    }
+
     private double powierzchnia_w_metrach;
     private double stawka;
 
@@ -59,6 +71,8 @@ public abstract class Lokal {
         return "Powierzchnia w metrach: " + powierzchnia_w_metrach + " Stawka: " + stawka;
     }
 }
+
+
 
 
 
