@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>6.1.11</version> <!-- Upewnij się, że wersja jest zgodna z Twoim projektem -->
+            <version>6.1.11</version>
             <scope>test</scope>
         </dependency>
 

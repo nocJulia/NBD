@@ -3,11 +3,21 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-  <persistence-unit name="default">
-
-
-
-
+  <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+    <class>org.example.model.Budynek</class>
+    <class>org.example.model.Lokal</class>
+    <class>org.example.model.Biuro</class>
+    <class>org.example.model.Mieszkanie</class>
+    <class>org.example.config.AppConfig</class>
+    <class>org.example.repository.LokalRepository</class>
+    <class>org.example.repository.BudynekRepository</class>
+    <class>org.example.repository.impl.BudynekRepositoryImpl</class>
+    <class>org.example.repository.impl.LokalRepositoryImpl</class>
+    <class>org.example.service.BudynekService</class>
+    <class>org.example.service.LokalService</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>CALLBACK</validation-mode>
     <properties>
       <!--<property name="jakarta.persistence.jdbc.url"
       value="jdbc: derby://localhost: 1527/RentDB; create=true"/>-->
