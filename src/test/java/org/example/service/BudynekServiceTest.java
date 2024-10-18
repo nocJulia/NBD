@@ -27,7 +27,7 @@ class BudynekServiceTest {
     }
 
     @Test
-    void dodajLokalDoBudynku_OptimisticLockException() {
+    void dodajLokalDoBudynkuTest() {
         Budynek budynek = new Budynek("Budynek1");
         Lokal lokal = mock(Lokal.class);
 
