@@ -1,22 +1,27 @@
 package org.example.model;
 
-import jakarta.persistence.*;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Lokal {
+public abstract class Lokal extends AbstractEntityMgd {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    public Long getId() {
-        return id;
+    public Lokal(UniqueIdMgd entityId, double powierzchnia, double stawka) {
+        super(entityId);  // Wywołanie konstruktora z klasy bazowej
+        this.powierzchnia_w_metrach = powierzchnia;
+        this.stawka = stawka;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "budynek_id") // Kolumna z kluczem obcym wskazującym na budynek
-    private Budynek budynek;
+    @BsonProperty("budynek")
+    private Budynek budynek; // Assume Budynek is also mapped with MongoDB annotations
+
+    @BsonProperty("powierzchnia_w_metrach")
+    private double powierzchnia_w_metrach;
+
+    @BsonProperty("stawka")
+    private double stawka;
+
+    // Versioning can be handled in MongoDB with special fields like "_version" if needed
+    @BsonProperty("version")
+    private Long version; // MongoDB does not have native support for optimistic locking
 
     public Budynek getBudynek() {
         return budynek;
@@ -26,28 +31,12 @@ public abstract class Lokal {
         this.budynek = budynek;
     }
 
-    private double powierzchnia_w_metrach;
-    private double stawka;
-
-    @Version // Blokada optymistyczna
-    private Long version; // Pole, które trzyma wersję rekordu
-
-    public Long getVersion() {
-        return version;
-    }
-
-    // Bezargumentowy konstruktor wymagany przez JPA
-    public Lokal() {}
-
-    public Lokal(double powierzchnia, double stawka) {
-        this.powierzchnia_w_metrach = powierzchnia;
-        this.stawka = stawka;
-    }
-
+    @BsonProperty("powierzchnia_w_metrach")
     public double dajPowierzchnie() {
         return powierzchnia_w_metrach;
     }
 
+    @BsonProperty("stawka")
     public double dajStawke() {
         return stawka;
     }
@@ -64,18 +53,10 @@ public abstract class Lokal {
         }
     }
 
+    // Abstract method for subclasses to implement
     public abstract double czynsz();
 
     public String informacja() {
-
         return "Powierzchnia w metrach: " + powierzchnia_w_metrach + " Stawka: " + stawka;
     }
 }
-
-
-
-
-
-
-
-

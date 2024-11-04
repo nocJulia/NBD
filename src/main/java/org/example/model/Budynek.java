@@ -1,45 +1,52 @@
 package org.example.model;
 
-import jakarta.persistence.*;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-public class Budynek {
+public class Budynek extends AbstractEntityMgd {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    @BsonProperty("nazwa")
     private String nazwa;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "budynek")
+    @BsonProperty("lokale")
     private List<Lokal> lokale;
 
-    public Budynek() {
-        this.lokale = new ArrayList<>();
-    }
-
-    public Budynek(String nazwa) {
+    @BsonCreator
+    public Budynek(UniqueIdMgd entityId, @BsonProperty("nazwa") String nazwa) {
+        super(entityId);  // Wywołanie konstruktora z klasy bazowej
         this.nazwa = nazwa;
         this.lokale = new ArrayList<>();
     }
 
+    public String getNazwa() {
+        return nazwa;
+    }
+
+    public void setNazwa(String nazwa) {
+        this.nazwa = nazwa;
+    }
+
+    public List<Lokal> getLokale() {
+        return lokale;
+    }
+
+    public void setLokale(List<Lokal> lokale) {
+        this.lokale = lokale;
+    }
+
+    // Add a Lokal to the building
     public void dodajLokal(Lokal lokal) {
         if (lokal != null) {
             lokale.add(lokal);
         }
     }
 
+    // Calculate total rent (czynsz)
     public double czynszCalkowity() {
         double suma = 0;
         for (Lokal lokal : lokale) {
@@ -48,14 +55,16 @@ public class Budynek {
         return suma;
     }
 
+    // Calculate profit (zysk) based on expenses per square meter
     public double zysk(double wydatkiZaMetr) {
         double suma = 0;
         for (Lokal lokal : lokale) {
             suma += lokal.czynsz() - (lokal.dajPowierzchnie() * wydatkiZaMetr);
         }
-        return Math.max(suma, 0);
+        return Math.max(suma, 0); // Ensure non-negative profit
     }
 
+    // Get a summary of all local properties
     public String informacjaZbiorcza() {
         StringBuilder info = new StringBuilder();
         for (Lokal lokal : lokale) {
@@ -64,4 +73,3 @@ public class Budynek {
         return info.toString();
     }
 }
-

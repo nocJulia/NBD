@@ -1,17 +1,19 @@
 package org.example.model;
 
-import jakarta.persistence.Entity;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.types.ObjectId;
 
-@Entity
 public class Biuro extends Lokal {
-
+    @BsonProperty("kosztyDodatkowe")
     private double kosztyDodatkowe;
 
-    // Bezargumentowy konstruktor wymagany przez JPA
-    public Biuro() {}
-
-    public Biuro(double powierzchnia, double stawka, double kosztyDodatkowe) {
-        super(powierzchnia, stawka);
+    // BsonCreator constructor for MongoDB document mapping
+    @BsonCreator
+    public Biuro(UniqueIdMgd entityId,@BsonProperty("powierzchnia") double powierzchnia,
+                 @BsonProperty("stawka") double stawka,
+                 @BsonProperty("kosztyDodatkowe") double kosztyDodatkowe) {
+        super(entityId, powierzchnia, stawka);
         this.kosztyDodatkowe = kosztyDodatkowe;
     }
 
@@ -20,6 +22,7 @@ public class Biuro extends Lokal {
         return (dajPowierzchnie() * dajStawke()) + dajKoszty();
     }
 
+    @BsonProperty("kosztyDodatkowe")
     public double dajKoszty() {
         return kosztyDodatkowe;
     }
@@ -32,9 +35,6 @@ public class Biuro extends Lokal {
 
     @Override
     public String informacja() {
-
         return "[Biuro] " + super.informacja() + " Koszty dodatkowe: " + kosztyDodatkowe;
     }
 }
-
-
