@@ -2,7 +2,6 @@ package org.example.model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.types.ObjectId;
 
 public class Biuro extends Lokal {
     @BsonProperty("kosztyDodatkowe")

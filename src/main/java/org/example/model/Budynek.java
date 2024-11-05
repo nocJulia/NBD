@@ -2,8 +2,6 @@ package org.example.model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,32 +1,29 @@
 package org.example.config;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import jakarta.persistence.EntityManagerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import javax.sql.DataSource;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@EnableTransactionManagement
-@ComponentScan(basePackages = "org.example")
-public class AppConfig {
+@EnableMongoRepositories(basePackages = "org.example.repository")  // Włącz MongoDB repozytoria
+public class AppConfig extends AbstractMongoClientConfiguration {
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setPersistenceUnitName("default");
-        return em;
+    @Override
+    protected String getDatabaseName() {
+        return "your_database_name";  // Nazwa Twojej bazy danych MongoDB
     }
 
     @Bean
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory);
+    @Override
+    public MongoClient mongoClient() {
+        return MongoClients.create("mongodb://localhost:27017");  // Adres MongoDB
+    }
+
+    @Override
+    protected boolean autoIndexCreation() {
+        return true;  // Automatyczne tworzenie indeksów w MongoDB
     }
 }

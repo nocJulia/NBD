@@ -1,56 +1,69 @@
 package org.example.service;
 
-import jakarta.persistence.OptimisticLockException;
 import org.example.model.Budynek;
 import org.example.model.Lokal;
+import org.example.repository.BudynekRepository;
+import org.example.repository.LokalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Service
 public class BudynekService {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final BudynekRepository budynekRepository;
+    private final LokalRepository lokalRepository;
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void dodajLokalDoBudynku(Budynek budynek, Lokal lokal) {
-        try {
-            budynek.dodajLokal(lokal);
-            em.persist(budynek);
-        } catch (OptimisticLockException e) {
-            // Obsługa błędu
-            System.out.println("Operacja nieudana z powodu równoczesnej modyfikacji danych. Spróbuj ponownie.");
-            throw e;
+    @Autowired
+    public BudynekService(BudynekRepository budynekRepository, LokalRepository lokalRepository) {
+        this.budynekRepository = budynekRepository;
+        this.lokalRepository = lokalRepository;
+    }
+
+    // Dodaj lokal do budynku i zapisz do MongoDB
+    public void dodajLokalDoBudynku(String budynekId, Lokal lokal) {
+        Optional<Budynek> budynekOpt = budynekRepository.findById(budynekId);
+        if (budynekOpt.isPresent()) {
+            Budynek budynek = budynekOpt.get();
+            budynek.dodajLokal(lokal);  // Dodajemy lokal do budynku
+            budynekRepository.save(budynek);  // Zapisujemy zaktualizowany budynek
+        } else {
+            System.out.println("Nie znaleziono budynku o podanym ID.");
         }
     }
 
-    // Poziom izolacji REPEATABLE_READ
-    @Transactional(isolation = Isolation.REPEATABLE_READ, readOnly = true)
-    public Budynek znajdzBudynek(Long id) {
-        return em.find(Budynek.class, id);
+    // Znajdź budynek po ID
+    public Optional<Budynek> znajdzBudynek(String id) {
+        return budynekRepository.findById(id);
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    // Aktualizacja stawki czynszu dla lokalu
     public void aktualizujCzynsz(Lokal lokal, double nowaStawka) {
-        try {
-            lokal.ustawStawke(nowaStawka);
-            em.merge(lokal);
-        } catch (OptimisticLockException e) {
-            // Obsługa błędu
-            System.out.println("Aktualizacja czynszu nie powiodła się z powodu równoczesnej modyfikacji.");
-            throw e;
+        lokal.ustawStawke(nowaStawka);
+        lokalRepository.save(lokal);  // Aktualizacja i zapis w MongoDB
+    }
+
+    // Usuwanie lokalu
+    public void usunLokal(String lokalId) {
+        lokalRepository.deleteById(lokalId);  // Usunięcie lokalu z MongoDB
+    }
+
+    // Metoda do aktualizacji budynku
+    public void aktualizujBudynek(String budynekId, Budynek nowyBudynek) {
+        Optional<Budynek> budynekOpt = budynekRepository.findById(budynekId);
+        if (budynekOpt.isPresent()) {
+            Budynek istniejącyBudynek = budynekOpt.get();
+
+            // Aktualizuj pola istniejącego budynku
+            istniejącyBudynek.setNazwa(nowyBudynek.getNazwa());
+            istniejącyBudynek.setLokale(nowyBudynek.getLokale());
+
+            // Zapisz zaktualizowany budynek
+            budynekRepository.save(istniejącyBudynek);
+        } else {
+            System.out.println("Nie znaleziono budynku o podanym ID.");
         }
     }
-
-    // Poziom izolacji READ_UNCOMMITTED (najniższy poziom izolacji)
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
-    public void usunLokal(Lokal lokal) {
-
-        em.remove(em.contains(lokal) ? lokal : em.merge(lokal));
-    }
-
 }
+
