@@ -13,8 +13,12 @@
 
 package org.example.repository;
 
+import org.example.model.Budynek;
 import org.example.model.Lokal;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 public interface LokalRepository extends MongoRepository<Lokal, String> {
+    Optional<Lokal> findById(String id);
 }
