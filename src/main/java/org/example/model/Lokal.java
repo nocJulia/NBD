@@ -1,27 +1,27 @@
 package org.example.model;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 
-public abstract class Lokal extends AbstractEntityMgd {
+public abstract class Lokal {
 
-    public Lokal(UniqueIdMgd entityId, double powierzchnia, double stawka) {
-        super(entityId);  // Wywołanie konstruktora z klasy bazowej
-        this.powierzchnia_w_metrach = powierzchnia;
+    public ObjectId _id;
+
+    public Lokal(ObjectId _id, Budynek budynek, double powierzchnia_w_metrach, double stawka) {
+        this._id = _id;
+        this.budynek = budynek;
+        this.powierzchnia_w_metrach = powierzchnia_w_metrach;
         this.stawka = stawka;
     }
 
-    @BsonProperty("budynek")
-    private Budynek budynek; // Assume Budynek is also mapped with MongoDB annotations
+    private Budynek budynek;
 
-    @BsonProperty("powierzchnia_w_metrach")
     private double powierzchnia_w_metrach;
 
-    @BsonProperty("stawka")
     private double stawka;
 
-    // Versioning can be handled in MongoDB with special fields like "_version" if needed
-    @BsonProperty("version")
-    private Long version; // MongoDB does not have native support for optimistic locking
+    public ObjectId get_id() {
+        return _id;
+    }
 
     public Budynek getBudynek() {
         return budynek;
@@ -31,12 +31,10 @@ public abstract class Lokal extends AbstractEntityMgd {
         this.budynek = budynek;
     }
 
-    @BsonProperty("powierzchnia_w_metrach")
     public double dajPowierzchnie() {
         return powierzchnia_w_metrach;
     }
 
-    @BsonProperty("stawka")
     public double dajStawke() {
         return stawka;
     }
@@ -53,7 +51,6 @@ public abstract class Lokal extends AbstractEntityMgd {
         }
     }
 
-    // Abstract method for subclasses to implement
     public abstract double czynsz();
 
     public String informacja() {

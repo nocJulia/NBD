@@ -1,14 +1,11 @@
 package org.example.model;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
 
-// This class extends the Lokal class, which has already been refactored for MongoDB.
 public class Mieszkanie extends Lokal {
 
-    // Constructor with parameters
-    public Mieszkanie(UniqueIdMgd entityId, @BsonProperty("powierzchnia") double powierzchnia,
-                      @BsonProperty("stawka") double stawka) {
-        super(entityId, powierzchnia, stawka);
+    public Mieszkanie(ObjectId _id, Budynek budynek, double powierzchnia_w_metrach, double stawka) {
+        super(_id, budynek, powierzchnia_w_metrach, stawka);
     }
 
     // Implementing the czynsz (rent) method

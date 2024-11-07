@@ -1,18 +1,13 @@
 package org.example.model;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.types.ObjectId;
 
 public class Biuro extends Lokal {
-    @BsonProperty("kosztyDodatkowe")
+
     private double kosztyDodatkowe;
 
-    // BsonCreator constructor for MongoDB document mapping
-    @BsonCreator
-    public Biuro(UniqueIdMgd entityId,@BsonProperty("powierzchnia") double powierzchnia,
-                 @BsonProperty("stawka") double stawka,
-                 @BsonProperty("kosztyDodatkowe") double kosztyDodatkowe) {
-        super(entityId, powierzchnia, stawka);
+    public Biuro(ObjectId _id, Budynek budynek, double powierzchnia_w_metrach, double stawka, double kosztyDodatkowe) {
+        super(_id, budynek, powierzchnia_w_metrach, stawka);
         this.kosztyDodatkowe = kosztyDodatkowe;
     }
 
@@ -21,7 +16,6 @@ public class Biuro extends Lokal {
         return (dajPowierzchnie() * dajStawke()) + dajKoszty();
     }
 
-    @BsonProperty("kosztyDodatkowe")
     public double dajKoszty() {
         return kosztyDodatkowe;
     }

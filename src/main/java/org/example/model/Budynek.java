@@ -1,24 +1,29 @@
 package org.example.model;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Budynek extends AbstractEntityMgd {
+public class Budynek {
 
-    @BsonProperty("nazwa")
+    private ObjectId _id;
+
     private String nazwa;
 
-    @BsonProperty("lokale")
     private List<Lokal> lokale;
 
-    @BsonCreator
-    public Budynek(UniqueIdMgd entityId, @BsonProperty("nazwa") String nazwa) {
-        super(entityId);  // Wywołanie konstruktora z klasy bazowej
+    public Budynek(String nazwa, List<Lokal> lokale) {
+        this._id = new ObjectId();
         this.nazwa = nazwa;
-        this.lokale = new ArrayList<>();
+        this.lokale = lokale;
+    }
+
+    public Budynek() {
+
+    }
+
+    public ObjectId get_id() {
+        return _id;
     }
 
     public String getNazwa() {
