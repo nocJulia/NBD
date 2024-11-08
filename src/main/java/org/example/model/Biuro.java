@@ -6,9 +6,18 @@ public class Biuro extends Lokal {
 
     private double kosztyDodatkowe;
 
+    public Biuro(Budynek budynek, double powierzchnia_w_metrach, double stawka, double kosztyDodatkowe) {
+        super(budynek, powierzchnia_w_metrach, stawka);
+        this.kosztyDodatkowe = kosztyDodatkowe;
+    }
+
     public Biuro(ObjectId _id, Budynek budynek, double powierzchnia_w_metrach, double stawka, double kosztyDodatkowe) {
         super(_id, budynek, powierzchnia_w_metrach, stawka);
         this.kosztyDodatkowe = kosztyDodatkowe;
+    }
+
+    public Biuro() {
+
     }
 
     @Override

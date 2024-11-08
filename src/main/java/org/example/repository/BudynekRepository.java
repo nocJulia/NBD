@@ -1,20 +1,8 @@
-//package org.example.repository;
-//
-//import org.example.model.Budynek;
-//
-//import java.util.List;
-//
-//public interface BudynekRepository {
-//    void save(Budynek budynek);
-//    Budynek findById(Long id);
-//    List<Budynek> findAll();
-//    void delete(Budynek budynek);
-//}
-
 package org.example.repository;
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.example.mappers.LokalMapper;
 import org.example.model.Budynek;
 import org.example.mappers.BudynekMapper;
@@ -27,10 +15,22 @@ public class BudynekRepository extends AbstractMongoRepository implements Reposi
     private final MongoCollection<Document> collection;
     private final BudynekMapper budynekMapper;
 
-    public BudynekRepository() {
+//    public BudynekRepository() {
+//        super.initDbConnection();
+//        this.collection = mongoDatabase.getCollection("budynki");
+//
+//        // Przekazanie BudynekRepository do LokalMapper
+//        this.budynekMapper = new BudynekMapper(this);
+//    }
+
+    public BudynekRepository(LokalMapper lokalMapper) {
         super.initDbConnection();
         this.collection = mongoDatabase.getCollection("budynki"); // Kolekcja "budynki"
-        this.budynekMapper = new BudynekMapper(new LokalMapper()); // Inicjalizacja mappera Budynek
+        this.budynekMapper = new BudynekMapper(lokalMapper);
+    }
+
+    public void setLokalMapper(LokalMapper lokalMapper) {
+        this.budynekMapper.setLokalMapper(lokalMapper);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class BudynekRepository extends AbstractMongoRepository implements Reposi
     }
 
     @Override
-    public Budynek findById(String id) {
+    public Budynek findById(ObjectId id) {
         Document doc = collection.find(new Document("_id", id)).first();
         if (doc != null) {
             return budynekMapper.fromDocument(doc);
@@ -59,14 +59,14 @@ public class BudynekRepository extends AbstractMongoRepository implements Reposi
 
     @Override
     public void update(Budynek budynek) {
-        Document query = new Document("_id", budynek.get_id());
+        Document query = new Document("_id", budynek.getId());
         Document updatedDoc = budynekMapper.toDocument(budynek);
         collection.replaceOne(query, updatedDoc);
     }
 
     @Override
     public void delete(Budynek budynek) {
-        Document query = new Document("_id", budynek.get_id());
+        Document query = new Document("_id", budynek.getId());
         collection.deleteOne(query);
     }
 
@@ -75,8 +75,8 @@ public class BudynekRepository extends AbstractMongoRepository implements Reposi
         return (int) collection.countDocuments();
     }
 
-    public void deleteAll() {
-        collection.deleteMany(new Document()); // Usuwa wszystkie dokumenty w kolekcji
+    public void clearCollection() {
+        collection.deleteMany(new Document()); // Usuwa wszystkie dokumenty z kolekcji "budynki"
     }
 
 }

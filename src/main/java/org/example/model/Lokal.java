@@ -6,6 +6,19 @@ public abstract class Lokal {
 
     public ObjectId _id;
 
+    private Budynek budynek;
+
+    private double powierzchnia_w_metrach;
+
+    private double stawka;
+
+    public Lokal(Budynek budynek, double powierzchnia_w_metrach, double stawka) {
+        this._id = new ObjectId();
+        this.budynek = budynek;
+        this.powierzchnia_w_metrach = powierzchnia_w_metrach;
+        this.stawka = stawka;
+    }
+
     public Lokal(ObjectId _id, Budynek budynek, double powierzchnia_w_metrach, double stawka) {
         this._id = _id;
         this.budynek = budynek;
@@ -13,13 +26,11 @@ public abstract class Lokal {
         this.stawka = stawka;
     }
 
-    private Budynek budynek;
+    public Lokal() {
 
-    private double powierzchnia_w_metrach;
+    }
 
-    private double stawka;
-
-    public ObjectId get_id() {
+    public ObjectId getId() {
         return _id;
     }
 

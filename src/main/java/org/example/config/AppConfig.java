@@ -1,29 +1,24 @@
-//package org.example.config;
-//
-//import com.mongodb.client.MongoClient;
-//import com.mongodb.client.MongoClients;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-//import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-//
-//@Configuration
-//@EnableMongoRepositories(basePackages = "org.example.repository")  // Włącz MongoDB repozytoria
-//public class AppConfig extends AbstractMongoClientConfiguration {
-//
-//    @Override
-//    protected String getDatabaseName() {
-//        return "your_database_name";  // Nazwa Twojej bazy danych MongoDB
-//    }
-//
-//    @Bean
-//    @Override
-//    public MongoClient mongoClient() {
-//        return MongoClients.create("mongodb://localhost:27017");  // Adres MongoDB
-//    }
-//
-//    @Override
-//    protected boolean autoIndexCreation() {
-//        return true;  // Automatyczne tworzenie indeksów w MongoDB
-//    }
-//}
+package org.example.config;
+
+import org.example.repository.BudynekRepository;
+import org.example.repository.LokalRepository;
+import org.example.mappers.LokalMapper;
+
+public class AppConfig {
+
+    public BudynekRepository createBudynekRepository() {
+        // Tworzymy instancję BudynekRepository bez LokalMapper
+        BudynekRepository budynekRepository = new BudynekRepository(null);
+
+        // Tworzymy instancję LokalMapper, przekazując BudynekRepository jako zależność
+        LokalMapper lokalMapper = new LokalMapper(budynekRepository);
+
+        // Przypisujemy lokalMapper do BudynekRepository (jeśli BudynekMapper potrzebuje tej zależności)
+        budynekRepository.setLokalMapper(lokalMapper);
+
+        // Tworzymy instancję LokalRepository, przekazując lokalMapper
+        LokalRepository lokalRepository = new LokalRepository(lokalMapper);
+
+        return budynekRepository;  // lub zwróć oba, jeśli będą potrzebne
+    }
+}

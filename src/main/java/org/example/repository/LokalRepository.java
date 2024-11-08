@@ -1,20 +1,8 @@
-//package org.example.repository;
-//
-//import org.example.model.Lokal;
-//
-//import java.util.List;
-//
-//public interface LokalRepository {
-//    void save(Lokal lokal);
-//    Lokal findById(Long id);
-//    List<Lokal> findAll();
-//    void delete(Lokal lokal);
-//}
-
 package org.example.repository;
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.example.model.Lokal;
 import org.example.mappers.LokalMapper;
 
@@ -26,10 +14,11 @@ public class LokalRepository extends AbstractMongoRepository implements Reposito
     private final MongoCollection<Document> collection;
     private final LokalMapper lokalMapper;
 
-    public LokalRepository() {
+    // Konstruktor przyjmujący LokalMapper jako zależność
+    public LokalRepository(LokalMapper lokalMapper) {
         super.initDbConnection();
         this.collection = mongoDatabase.getCollection("lokale"); // Kolekcja "lokale"
-        this.lokalMapper = new LokalMapper(); // Inicjalizacja mappera Lokal
+        this.lokalMapper = lokalMapper; // Używamy przekazanej instancji LokalMapper
     }
 
     @Override
@@ -39,7 +28,7 @@ public class LokalRepository extends AbstractMongoRepository implements Reposito
     }
 
     @Override
-    public Lokal findById(String id) {
+    public Lokal findById(ObjectId id) {
         Document doc = collection.find(new Document("_id", id)).first();
         if (doc != null) {
             return lokalMapper.fromDocument(doc);
@@ -58,14 +47,14 @@ public class LokalRepository extends AbstractMongoRepository implements Reposito
 
     @Override
     public void update(Lokal lokal) {
-        Document query = new Document("_id", lokal.get_id());
+        Document query = new Document("_id", lokal.getId());
         Document updatedDoc = lokalMapper.toDocument(lokal);
         collection.replaceOne(query, updatedDoc);
     }
 
     @Override
     public void delete(Lokal lokal) {
-        Document query = new Document("_id", lokal.get_id());
+        Document query = new Document("_id", lokal.getId());
         collection.deleteOne(query);
     }
 
@@ -73,5 +62,8 @@ public class LokalRepository extends AbstractMongoRepository implements Reposito
     public int size() {
         return (int) collection.countDocuments();
     }
-}
 
+    public void clearCollection() {
+        collection.deleteMany(new Document()); // Usuwa wszystkie dokumenty z kolekcji "lokale"
+    }
+}

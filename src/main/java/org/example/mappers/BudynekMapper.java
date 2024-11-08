@@ -10,9 +10,13 @@ import java.util.stream.Collectors;
 
 public class BudynekMapper {
 
-    private final LokalMapper lokalMapper; // Potrzebny mapper do obsługi klasy Lokal
+    private LokalMapper lokalMapper;
 
     public BudynekMapper(LokalMapper lokalMapper) {
+        this.lokalMapper = lokalMapper;
+    }
+
+    public void setLokalMapper(LokalMapper lokalMapper) {
         this.lokalMapper = lokalMapper;
     }
 
@@ -20,7 +24,7 @@ public class BudynekMapper {
     public Document toDocument(Budynek budynek) {
         Document document = new Document();
 
-        document.put("_id", budynek.get_id().toHexString());  // Konwersja ObjectId na String
+        document.put("_id", budynek.getId());
         document.put("nazwa", budynek.getNazwa());
 
         // Konwersja listy obiektów Lokal do listy dokumentów BSON
@@ -35,7 +39,7 @@ public class BudynekMapper {
 
     // Metoda konwertująca Document na Budynek
     public Budynek fromDocument(Document document) {
-        ObjectId _id = new ObjectId(document.getString("_id"));
+        ObjectId _id = (ObjectId) document.get("_id");
         String nazwa = document.getString("nazwa");
 
         // Pobranie listy dokumentów "lokale" i konwersja na listę obiektów Lokal
@@ -44,9 +48,6 @@ public class BudynekMapper {
                 .map(lokalMapper::fromDocument)  // Konwersja każdego dokumentu na obiekt Lokal
                 .collect(Collectors.toList());
 
-        Budynek budynek = new Budynek(nazwa, lokale);
-//        budynek.set_id(_id);  // Ustawienie identyfikatora
-
-        return budynek;
+        return new Budynek(_id, nazwa);
     }
 }

@@ -2,6 +2,7 @@ package org.example.model;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Budynek {
@@ -12,17 +13,23 @@ public class Budynek {
 
     private List<Lokal> lokale;
 
-    public Budynek(String nazwa, List<Lokal> lokale) {
+    public Budynek(String nazwa) {
         this._id = new ObjectId();
         this.nazwa = nazwa;
-        this.lokale = lokale;
+        this.lokale = new ArrayList<>();
+    }
+
+    public Budynek(ObjectId _id,String nazwa) {
+        this._id = _id;
+        this.nazwa = nazwa;
+        this.lokale = new ArrayList<>();
     }
 
     public Budynek() {
 
     }
 
-    public ObjectId get_id() {
+    public ObjectId getId() {
         return _id;
     }
 

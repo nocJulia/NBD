@@ -12,17 +12,22 @@ public class LokalMapper implements Mapper<Lokal> {
 
     private BudynekRepository budynekRepository;
 
+    // Konstruktor, który przyjmuje BudynekRepository jako zależność
+    public LokalMapper(BudynekRepository budynekRepository) {
+        this.budynekRepository = budynekRepository;
+    }
+
     @Override
     public Document toDocument(Lokal entity) {
         Document document = new Document();
 
-        document.put("_id", entity.get_id().toHexString());
+        document.put("_id", entity.getId());
         document.put("powierzchnia", entity.dajPowierzchnie());
         document.put("stawka", entity.dajStawke());
 
         // Serializacja ID budynku
         if (entity.getBudynek() != null) {
-            document.put("budynek", entity.getBudynek().get_id().toHexString());
+            document.put("budynek", entity.getBudynek().getId());
         }
 
         // Zapisz typ i specyficzne dane dla podklas
@@ -31,22 +36,23 @@ public class LokalMapper implements Mapper<Lokal> {
             document.put("kosztyDodatkowe", biuro.dajKoszty());
         } else if (entity instanceof Mieszkanie) {
             document.put("type", "Mieszkanie");
-            // Brak dodatkowych atrybutów dla Mieszkanie
         } else {
             throw new IllegalArgumentException("Unsupported lokal type: " + entity.getClass().getSimpleName());
         }
 
         return document;
+
     }
+
 
     @Override
     public Lokal fromDocument(Document document) {
-        ObjectId _id = new ObjectId(document.getString("_id"));
+        ObjectId _id = (ObjectId) document.get("_id");
         double powierzchnia = document.getDouble("powierzchnia");
         double stawka = document.getDouble("stawka");
 
-        String budynekId = document.getString("budynek");
-        Budynek budynek = findById(budynekId);  // Funkcja do pobrania obiektu Budynek na podstawie ID
+        ObjectId budynekId = (ObjectId) document.get("_id");
+        Budynek budynek = budynekRepository.findById(budynekId);  // Funkcja do pobrania obiektu Budynek na podstawie ID
 
         String type = document.getString("type");
 
@@ -62,13 +68,11 @@ public class LokalMapper implements Mapper<Lokal> {
         }
     }
 
-    private Budynek findById(String budynekId) {
-        if (budynekId == null) {
-            return null;
-        }
-
-        ObjectId id = new ObjectId(budynekId);
-        return budynekRepository.findById(String.valueOf(id));
-    }
+//    private Budynek findById(ObjectId budynekId) {
+//        if (budynekId == null) {
+//            return null;
+//        }
+//        return budynekRepository.findById(budynekId);
+//    }
 }
 
