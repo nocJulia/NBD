@@ -67,12 +67,4 @@ public class LokalMapper implements Mapper<Lokal> {
             default -> throw new IllegalArgumentException("Unknown lokal type: " + type);
         }
     }
-
-//    private Budynek findById(ObjectId budynekId) {
-//        if (budynekId == null) {
-//            return null;
-//        }
-//        return budynekRepository.findById(budynekId);
-//    }
 }
-

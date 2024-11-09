@@ -15,14 +15,6 @@ public class BudynekRepository extends AbstractMongoRepository implements Reposi
     private final MongoCollection<Document> collection;
     private final BudynekMapper budynekMapper;
 
-//    public BudynekRepository() {
-//        super.initDbConnection();
-//        this.collection = mongoDatabase.getCollection("budynki");
-//
-//        // Przekazanie BudynekRepository do LokalMapper
-//        this.budynekMapper = new BudynekMapper(this);
-//    }
-
     public BudynekRepository(LokalMapper lokalMapper) {
         super.initDbConnection();
         this.collection = mongoDatabase.getCollection("budynki"); // Kolekcja "budynki"
