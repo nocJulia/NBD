@@ -22,6 +22,12 @@ public class DatabaseValidationTest {
 
         budynekRepository.clearCollection();
         lokalRepository.clearCollection();
+
+        MongoDatabase database = budynekRepository.getMongoDatabase();
+        database.getCollection("budynki").drop();
+        database.getCollection("lokale").drop();
+        MongoSchemaValidator.createBudynekValidationSchema(database);
+        MongoSchemaValidator.createLokalValidationSchema(database);
     }
 
     @Test
