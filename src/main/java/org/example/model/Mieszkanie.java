@@ -12,10 +12,6 @@ public class Mieszkanie extends Lokal {
         super(_id, budynek, powierzchnia_w_metrach, stawka);
     }
 
-    public Mieszkanie() {
-
-    }
-
     @Override
     public double czynsz() {
         return dajPowierzchnie() * dajStawke(); // Calculate rent based on area and rate

@@ -17,7 +17,7 @@ public class LokalRepository extends AbstractMongoRepository implements Reposito
     // Konstruktor przyjmujący LokalMapper jako zależność
     public LokalRepository(LokalMapper lokalMapper) {
         super.initDbConnection();
-        this.collection = mongoDatabase.getCollection("lokale"); // Kolekcja "lokale"
+        this.collection = mongoDatabase.getCollection("lokale");
         this.lokalMapper = lokalMapper; // Używamy przekazanej instancji LokalMapper
     }
 

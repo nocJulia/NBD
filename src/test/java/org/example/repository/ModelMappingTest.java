@@ -1,27 +1,25 @@
 package org.example.repository;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.example.model.*;
-import org.example.mappers.*;
-import org.example.repository.*;
-import org.junit.jupiter.api.*;
+import org.example.mappers.LokalMapper;
+import org.example.model.Biuro;
+import org.example.model.Budynek;
+import org.example.model.Lokal;
+import org.example.model.Mieszkanie;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ModelMappingTest {
-    private BudynekRepository budynekRepository;
-    private LokalRepository lokalRepository;
-    private BudynekMapper budynekMapper;
     private LokalMapper lokalMapper;
 
     @BeforeEach
     void setUp() {
-        budynekRepository = new BudynekRepository(null);
+        BudynekRepository budynekRepository = new BudynekRepository(null);
         lokalMapper = new LokalMapper(budynekRepository);
         budynekRepository.setLokalMapper(lokalMapper);
-        lokalRepository = new LokalRepository(lokalMapper);
-        budynekMapper = new BudynekMapper(lokalMapper);
     }
 
     @Test
@@ -35,7 +33,7 @@ public class ModelMappingTest {
         assertTrue(mappedBiuro instanceof Biuro);
         assertEquals(biuro.dajPowierzchnie(), mappedBiuro.dajPowierzchnie());
         assertEquals(biuro.dajStawke(), mappedBiuro.dajStawke());
-        assertEquals(((Biuro)biuro).dajKoszty(), ((Biuro)mappedBiuro).dajKoszty());
+        assertEquals(biuro.dajKoszty(), ((Biuro)mappedBiuro).dajKoszty());
     }
 
     @Test

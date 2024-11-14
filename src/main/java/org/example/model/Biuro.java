@@ -16,10 +16,6 @@ public class Biuro extends Lokal {
         this.kosztyDodatkowe = kosztyDodatkowe;
     }
 
-    public Biuro() {
-
-    }
-
     @Override
     public double czynsz() {
         return (dajPowierzchnie() * dajStawke()) + dajKoszty();

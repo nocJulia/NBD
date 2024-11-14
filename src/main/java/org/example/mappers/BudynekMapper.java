@@ -42,12 +42,18 @@ public class BudynekMapper {
         ObjectId _id = (ObjectId) document.get("_id");
         String nazwa = document.getString("nazwa");
 
+        Budynek budynek = new Budynek(_id, nazwa);
+
         // Pobranie listy dokumentów "lokale" i konwersja na listę obiektów Lokal
         List<Document> lokaleDocs = document.getList("lokale", Document.class);
-        List<Lokal> lokale = lokaleDocs.stream()
-                .map(lokalMapper::fromDocument)  // Konwersja każdego dokumentu na obiekt Lokal
-                .collect(Collectors.toList());
+        if (lokaleDocs != null) {
+            List<Lokal> lokale = lokaleDocs.stream()
+                    .map(lokalMapper::fromDocument)  // Konwertuje każdy dokument na obiekt Lokal
+                    .collect(Collectors.toList());
+            budynek.setLokale(lokale);  // Ustawienie listy lokali w obiekcie Budynek
+        }
 
-        return new Budynek(_id, nazwa);
+        return budynek;
     }
+
 }

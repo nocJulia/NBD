@@ -3,7 +3,6 @@ package org.example.repository;
 import com.mongodb.client.MongoDatabase;
 import org.junit.jupiter.api.*;
 import org.example.validation.MongoSchemaValidator;
-import org.example.repository.*;
 import org.example.model.*;
 import org.example.mappers.*;
 
@@ -34,18 +33,14 @@ public class DatabaseValidationTest {
     void dobryBudynekZapisz() {
         Budynek budynek = new Budynek("TestBuilding");
 
-        assertDoesNotThrow(() -> {
-            budynekRepository.save(budynek);
-        });
+        assertDoesNotThrow(() -> budynekRepository.save(budynek));
     }
 
     @Test
     void zlyBudynekZapisz() {
-        Budynek budynek = new Budynek("");  // Invalid empty name
+        Budynek budynek = new Budynek("");
 
-        assertThrows(Exception.class, () -> {
-            budynekRepository.save(budynek);
-        });
+        assertThrows(Exception.class, () -> budynekRepository.save(budynek));
     }
 
     @Test
@@ -54,9 +49,7 @@ public class DatabaseValidationTest {
         budynekRepository.save(budynek);
         Biuro biuro = new Biuro(budynek, 100.0, 50.0, 1000.0);
 
-        assertDoesNotThrow(() -> {
-            lokalRepository.save(biuro);
-        });
+        assertDoesNotThrow(() -> lokalRepository.save(biuro));
     }
 
     @Test
@@ -65,8 +58,6 @@ public class DatabaseValidationTest {
         budynekRepository.save(budynek);
         Biuro biuro = new Biuro(budynek, -100.0, 50.0, 1000.0);
 
-        assertThrows(Exception.class, () -> {
-            lokalRepository.save(biuro);
-        });
+        assertThrows(Exception.class, () -> lokalRepository.save(biuro));
     }
 }

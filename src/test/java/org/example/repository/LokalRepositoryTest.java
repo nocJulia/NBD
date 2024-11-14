@@ -24,7 +24,6 @@ public class LokalRepositoryTest {
         budynekRepository.setLokalMapper(lokalMapper);
         lokalRepository = new LokalRepository(lokalMapper);
 
-        budynekRepository.clearCollection();
         lokalRepository.clearCollection();
     }
 
@@ -108,4 +107,27 @@ public class LokalRepositoryTest {
 
         Assertions.assertEquals(2, lokalRepository.size(), "Repozytorium powinno zawierać dwa dokumenty.");
     }
+
+    @Test
+    public void testDodajLokalDoBudynku() {
+        // Tworzenie nowego budynku i zapisanie go w repozytorium
+        Budynek budynek = new Budynek(new ObjectId(), "Budynek z jednym lokalem");
+        budynekRepository.save(budynek);
+
+        // Tworzenie nowego lokalu przypisanego do tego budynku
+        Lokal lokal = new Mieszkanie(new ObjectId(), budynek, 75, 20.0);
+        lokalRepository.save(lokal);
+
+        // Aktualizacja listy lokali w budynku po dodaniu nowego lokalu
+        budynek.dodajLokal(lokal);
+        budynekRepository.update(budynek); // Zapisanie zaktualizowanego budynku z dodanym lokalem
+
+        // Pobranie budynku z repozytorium i sprawdzenie, czy zawiera nowy lokal
+        Budynek updatedBudynek = budynekRepository.findById(budynek.getId());
+
+        // Sprawdzamy, czy lista lokali w budynku ma dokładnie jeden lokal
+        Assertions.assertEquals(1, updatedBudynek.getLokale().size(), "Budynek powinien zawierać jeden lokal.");
+        Assertions.assertEquals(lokal.getId(), updatedBudynek.getLokale().get(0).getId(), "Dodany lokal powinien znajdować się w budynku.");
+    }
+
 }

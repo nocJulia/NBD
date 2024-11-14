@@ -3,8 +3,6 @@ package org.example.repository;
 import org.bson.types.ObjectId;
 import org.example.mappers.LokalMapper;
 import org.example.model.Budynek;
-import org.example.model.Lokal;
-import org.example.model.Mieszkanie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +12,6 @@ import java.util.List;
 public class BudynekRepositoryTest {
 
     private BudynekRepository budynekRepository;
-    private LokalRepository lokalRepository;
 
     @BeforeEach
     public void setup() {
@@ -22,12 +19,8 @@ public class BudynekRepositoryTest {
         budynekRepository = new BudynekRepository(null);
         LokalMapper lokalMapper = new LokalMapper(budynekRepository);
         budynekRepository.setLokalMapper(lokalMapper);
-        lokalRepository = new LokalRepository(lokalMapper);
 
-        // Wyczyść kolekcje przed każdym testem
         budynekRepository.clearCollection();
-        lokalRepository.clearCollection();
-
     }
 
 
@@ -93,5 +86,4 @@ public class BudynekRepositoryTest {
 
         Assertions.assertEquals(2, budynekRepository.size(), "Repozytorium powinno zawierać dwa dokumenty.");
     }
-
 }

@@ -18,8 +18,8 @@ class BudynekTest {
     void setUp() {
         // Przygotowanie instancji Budynku oraz różnych typów lokali przed każdym testem
         budynek = new Budynek("Kompleks");
-        biuro1 = new Biuro(budynek, 50, 20, 100); // powierzchnia 50, stawka 20, koszty dodatkowe 100
-        mieszkanie1 = new Mieszkanie(budynek, 70, 15); // powierzchnia 70, stawka 15
+        biuro1 = new Biuro(budynek, 50, 20, 100);
+        mieszkanie1 = new Mieszkanie(budynek, 70, 15);
     }
 
     @Test
