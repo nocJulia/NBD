@@ -10,7 +10,7 @@ import org.example.repository.BudynekRepository;
 
 public class LokalMapper implements Mapper<Lokal> {
 
-    private final BudynekRepository budynekRepository;
+    public BudynekRepository budynekRepository;
 
     // Konstruktor, który przyjmuje BudynekRepository jako zależność
     public LokalMapper(BudynekRepository budynekRepository) {
