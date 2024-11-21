@@ -12,6 +12,10 @@ public class BudynekMapper {
 
     private LokalMapper lokalMapper;
 
+    public LokalMapper getLokalMapper() {
+        return lokalMapper;
+    }
+
     public BudynekMapper(LokalMapper lokalMapper) {
         this.lokalMapper = lokalMapper;
     }
