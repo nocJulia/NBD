@@ -11,4 +11,6 @@ public interface Repository<T> {
     void update(T obj);
     void delete(T obj);
     int size();
+
+    void clearCollection();
 }
