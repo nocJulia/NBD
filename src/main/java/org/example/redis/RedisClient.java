@@ -1,28 +1,30 @@
 package org.example.redis;
 
-import lombok.Getter;
 import redis.clients.jedis.DefaultJedisClientConfig;
+import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.JedisPooled;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class RedisClient {
-    @Getter
     private static JedisPooled pool;
-    private void innitConnection() throws IOException {
-        Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.properties")) {
-            properties.load(fis);
+
+    void innitConnection() throws IOException {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("redis_connection.properties")) {
+            Properties properties = new Properties();
+            properties.load(input);
+
+            JedisClientConfig jedisClientConfig = DefaultJedisClientConfig.builder().build();
+            pool = new JedisPooled(new HostAndPort(properties.getProperty("redis.host"), Integer.parseInt(properties.getProperty("redis.port"))), jedisClientConfig);
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
-        String host = properties.getProperty("redis.host");
-        int port = Integer.parseInt(properties.getProperty("redis.port"));
-
-        JedisClientConfig clientConfig = DefaultJedisClientConfig.builder().build();
-        pool = new JedisPooled(host, port, clientConfig.isSsl());
     }
-
+    public static JedisPooled getPool() {
+        return pool;
+    }
 }

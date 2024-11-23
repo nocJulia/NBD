@@ -1,13 +1,13 @@
 package org.example.repository;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.bson.types.ObjectId;
 import org.example.model.Budynek;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPooled;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.util.List;
 
@@ -23,18 +23,25 @@ public class CachedBudynekRepository implements Repository<Budynek> {
         this.jedis = jedis;
     }
 
+    private String serialize(Budynek budynek) {
+        return "{\"id\":\"" + budynek.getId().toHexString() + "\",\"name\":\"" + budynek.getNazwa() + "\"}";
+    }
+
     @Override
     public void save(Budynek budynek) {
         delegate.save(budynek);
-        String cacheKey = generateCacheKey(budynek.getId());
-        jedis.set(cacheKey, serialize(budynek));
+        String key = "budynek:" + budynek.getId().toHexString();
+        String value = serialize(budynek); // Poprawiona serializacja
+        jedis.setex(key, 3600, value);
     }
+
 
     @Override
     public Budynek findById(ObjectId id) {
         String cacheKey = generateCacheKey(id);
 
         try {
+            // Próba odczytu z Redis
             String cachedData = jedis.get(cacheKey);
             if (cachedData != null) {
                 return deserialize(cachedData, Budynek.class);
@@ -43,15 +50,16 @@ public class CachedBudynekRepository implements Repository<Budynek> {
             logger.error("Redis is unavailable. Falling back to MongoDB.", e);
         }
 
+        // Jeżeli brak danych w Redis, pobieramy je z MongoDB
         Budynek budynek = delegate.findById(id);
         if (budynek != null) {
             try {
-                jedis.set(cacheKey, serialize(budynek));
+                // Zapisywanie w Redis z TTL
+                jedis.setex(cacheKey, 3600L, serialize(budynek)); // TTL ustawione na 3600 sekund
             } catch (JedisConnectionException e) {
                 logger.warn("Redis is still unavailable. Skipping cache update.", e);
             }
         }
-
         return budynek;
     }
 
@@ -85,11 +93,7 @@ public class CachedBudynekRepository implements Repository<Budynek> {
     }
 
     private String generateCacheKey(ObjectId id) {
-        return "budynek:" + id.toString();
-    }
-
-    private String serialize(Object obj) {
-        return new Gson().toJson(obj);
+        return "budynek:" + id.toHexString();
     }
 
     private <T> T deserialize(String json, Class<T> clazz) {
@@ -97,7 +101,7 @@ public class CachedBudynekRepository implements Repository<Budynek> {
     }
 
     public void invalidateCache(ObjectId id) {
-        jedis.del("budynek:" + id.toString()); // Usuwamy dane z cache
+        jedis.del("budynek:" + id.toHexString()); // Usuwamy dane z cache
     }
 
 }

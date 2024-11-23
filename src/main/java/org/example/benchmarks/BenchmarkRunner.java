@@ -2,6 +2,8 @@ package org.example.benchmarks;
 
 public class BenchmarkRunner {
     public static void main(String[] args) throws Exception {
-        org.openjdk.jmh.Main.main(args);
+        String[] jmhArgs = {};
+        org.openjdk.jmh.Main.main(jmhArgs);
     }
 }
+

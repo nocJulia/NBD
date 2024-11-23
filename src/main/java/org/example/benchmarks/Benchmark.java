@@ -1,20 +1,21 @@
 package org.example.benchmarks;
 
+import org.bson.types.ObjectId;
 import org.example.model.Budynek;
 import org.example.repository.BudynekRepository;
 import org.example.repository.CachedBudynekRepository;
+import org.mockito.Mockito;
 import org.openjdk.jmh.annotations.*;
-import org.mockito.*;
-import org.bson.types.ObjectId;
 import redis.clients.jedis.JedisPooled;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.Mockito.mock;
-
 @BenchmarkMode(Mode.AverageTime)  // Mierzymy średni czas wykonania
 @OutputTimeUnit(TimeUnit.MILLISECONDS)  // Wynik w milisekundach
 @State(Scope.Thread)  // Każdy wątek testowy będzie miał swoje osobne instancje
+@Fork(5)
+@Warmup(iterations = 2)
+@Measurement(iterations = 5)
 public class Benchmark {
 
     private CachedBudynekRepository repository;
@@ -37,7 +38,7 @@ public class Benchmark {
     public Budynek testCacheHit() {
         // Scenariusz: Cache Hit - dane są w cache
         String cacheKey = "budynek:" + id.toString();
-        String cachedData = "{\"id\":\"" + id.toString() + "\",\"nazwa\":\"Testowy Budynek\"}";
+        String cachedData = "{\"id\":\"" + id + "\",\"nazwa\":\"Testowy Budynek\"}";
         Mockito.when(jedis.get(cacheKey)).thenReturn(cachedData);  // Mockujemy dane w cache
 
         return repository.findById(id);  // Odczytujemy dane, które są już w cache
