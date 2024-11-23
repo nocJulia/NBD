@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)  // Wynik w milisekundach
 @State(Scope.Thread)  // Każdy wątek testowy będzie miał swoje osobne instancje
 @Fork(5)
-@Warmup(iterations = 2)
-@Measurement(iterations = 5)
+@Warmup(iterations = 5)
+@Measurement(iterations = 3)
 public class Benchmark {
 
     private CachedBudynekRepository repository;
