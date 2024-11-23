@@ -1,19 +1,22 @@
 package org.example.redis;
 
 import org.bson.types.ObjectId;
+import org.example.mappers.LokalMapper;
 import org.example.model.Budynek;
 import org.example.repository.BudynekRepository;
 import org.example.repository.CachedBudynekRepository;
-import org.example.mappers.LokalMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import redis.clients.jedis.JedisPooled;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 class CachedBudynekRepositoryTest {
 
@@ -21,7 +24,6 @@ class CachedBudynekRepositoryTest {
     private JedisPooled jedis; // rzeczywiste połączenie z Redis
     private CachedBudynekRepository repository;
     private Budynek testBudynek; // Obiekt, który będzie testowany
-    private Budynek testBudynek1;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -53,7 +55,7 @@ class CachedBudynekRepositoryTest {
     @Test
     void testSave() {
         // Wywołanie metody save
-        testBudynek1 = new Budynek(new ObjectId(), "Testowy Budynek1");
+        Budynek testBudynek1 = new Budynek(new ObjectId(), "Testowy Budynek1");
         repository.save(testBudynek1);
 
         // Weryfikacja danych w MongoDB
@@ -91,5 +93,37 @@ class CachedBudynekRepositoryTest {
                 redisValue
         );
     }
+
+    @Test
+    void testFindById_RedisUnavailable() {
+        // Mockowanie problemu z połączeniem do Redis (rzucenie wyjątku podczas wywołania 'get')
+        JedisPooled mockedJedis = Mockito.spy(jedis); // Tworzymy mockowany obiekt na podstawie rzeczywistego
+        doThrow(new JedisConnectionException("Redis connection failed"))
+                .when(mockedJedis).get("budynek:" + testBudynek.getId().toHexString());
+
+        // Zastąpienie połączenia w CachedBudynekRepository mockowanym Jedis
+        CachedBudynekRepository repositoryWithMockedRedis =
+                new CachedBudynekRepository(mongoRepository, mockedJedis);
+
+        // Wywołanie metody findById
+        Budynek result = repositoryWithMockedRedis.findById(testBudynek.getId());
+
+        // Weryfikacja, że dane zostały pobrane z MongoDB
+        assertNotNull(result);
+        assertEquals(testBudynek.getNazwa(), result.getNazwa());
+
+        // Weryfikacja, że dane z MongoDB zostały użyte
+        Budynek mongoResult = mongoRepository.findById(testBudynek.getId());
+        assertNotNull(mongoResult);
+        assertEquals(testBudynek.getNazwa(), mongoResult.getNazwa());
+
+        // Weryfikacja, że metoda 'setex' była wywołana pomimo problemów z Redis
+        verify(mockedJedis, times(1)).setex(
+                eq("budynek:" + testBudynek.getId().toHexString()),
+                eq(3600L),
+                anyString()
+        );
+    }
+
 
 }
