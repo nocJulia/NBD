@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.AverageTime)  // Mierzymy średni czas wykonania
 @OutputTimeUnit(TimeUnit.MILLISECONDS)  // Wynik w milisekundach
 @State(Scope.Thread)  // Każdy wątek testowy będzie miał swoje osobne instancje
-@Fork(5)
+@Fork(1)
 @Warmup(iterations = 5)
 @Measurement(iterations = 3)
 public class Benchmark {

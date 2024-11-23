@@ -5,14 +5,13 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisClientConfig;
 import redis.clients.jedis.JedisPooled;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class RedisClient {
     private static JedisPooled pool;
 
-    void innitConnection() throws IOException {
+    public void innitConnection() {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("redis_connection.properties")) {
             Properties properties = new Properties();
             properties.load(input);

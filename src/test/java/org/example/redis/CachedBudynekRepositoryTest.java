@@ -20,10 +20,10 @@ import static org.mockito.Mockito.*;
 
 class CachedBudynekRepositoryTest {
 
-    private BudynekRepository mongoRepository; // prawdziwe repozytorium
-    private JedisPooled jedis; // rzeczywiste połączenie z Redis
+    private BudynekRepository mongoRepository;
+    private JedisPooled jedis;
     private CachedBudynekRepository repository;
-    private Budynek testBudynek; // Obiekt, który będzie testowany
+    private Budynek testBudynek;
 
     @BeforeEach
     public void setup() throws IOException {
