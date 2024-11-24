@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 public abstract class Lokal {
     private double powierzchnia_w_metrach;

@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.model.Biuro;
+import org.example.model.Budynek;
+import org.example.model.Mieszkanie;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
