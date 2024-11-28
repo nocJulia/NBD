@@ -23,7 +23,7 @@ public class Benchmark {
     private BudynekRepository mongoRepository;
     private JedisPooled jedis;
 
-    @Setup(Level.Trial)  // Set up at the trial level to initialize only once before benchmarks start
+    @Setup(Level.Trial)
     public void setup() {
         mongoRepository = new BudynekRepository(null);
         LokalMapper lokalMapper = new LokalMapper(mongoRepository);
@@ -32,12 +32,12 @@ public class Benchmark {
         RedisClient redisClient = new RedisClient();
         redisClient.innitConnection();
 
-        jedis = RedisClient.getPool(); // Pobranie instancji JedisPooled z RedisClient
-        // Tworzenie repozytorium z cache
+        jedis = RedisClient.getPool();
+
         repository = new CachedBudynekRepository(mongoRepository, jedis);
     }
 
-    @TearDown(Level.Trial)  // Set up after the entire benchmark
+    @TearDown(Level.Trial)
     public void tearDown() {
         // Wywołanie metody do czyszczenia cache po zakończeniu wszystkich benchmarków
         RedisClient.clearCache();
