@@ -1,9 +1,6 @@
 package org.example.redis;
 
-import redis.clients.jedis.DefaultJedisClientConfig;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisClientConfig;
-import redis.clients.jedis.JedisPooled;
+import redis.clients.jedis.*;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -26,4 +23,19 @@ public class RedisClient {
     public static JedisPooled getPool() {
         return pool;
     }
+
+    public static void clearCache() {
+        if (pool != null) {
+            try {
+                // Wysłanie bezpośredniego polecenia Redis: FLUSHDB
+                pool.sendCommand(Protocol.Command.FLUSHDB);
+                System.out.println("Cache cleared successfully.");
+            } catch (Exception e) {
+                System.err.println("Failed to clear cache: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Redis connection is not initialized.");
+        }
+    }
+
 }
