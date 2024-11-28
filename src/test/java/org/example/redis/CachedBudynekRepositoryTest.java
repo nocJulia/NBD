@@ -120,7 +120,7 @@ class CachedBudynekRepositoryTest {
         // Weryfikacja, że metoda 'setex' była wywołana pomimo problemów z Redis
         verify(mockedJedis, times(1)).setex(
                 eq("budynek:" + testBudynek.getId().toHexString()),
-                eq(3600L),
+                eq(30L),
                 anyString()
         );
     }

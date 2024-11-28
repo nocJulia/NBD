@@ -31,7 +31,7 @@ public class CachedBudynekRepository implements Repository<Budynek> {
         delegate.save(budynek);
         String key = "budynek:" + budynek.getId().toHexString();
         String value = serialize(budynek); // Poprawiona serializacja
-        jedis.setex(key, 3600, value);
+        jedis.setex(key, 30, value);
     }
 
 
@@ -54,7 +54,7 @@ public class CachedBudynekRepository implements Repository<Budynek> {
         if (budynek != null) {
             try {
                 // Zapisywanie w Redis z TTL
-                jedis.setex(cacheKey, 3600L, serialize(budynek)); // TTL ustawione na 3600 sekund
+                jedis.setex(cacheKey, 30L, serialize(budynek)); // TTL ustawione na 3600 sekund
             } catch (JedisConnectionException e) {
                 logger.warn("Redis is still unavailable. Skipping cache update.", e);
             }
