@@ -1,4 +1,5 @@
-version: '3.9'
+version: '3.8'
+
 services:
   cassandra1:
     image: docker.io/bitnami/cassandra:latest
@@ -9,23 +10,20 @@ services:
     volumes:
       - cassandra1_data:/bitnami
     networks:
-      cassandranet:
-        ipv4_address: 172.24.0.2
+      - cassandranet
     environment:
       - CASSANDRA_LISTEN_ADDRESS=cassandra1
       - CASSANDRA_BROADCAST_ADDRESS=cassandra1
       - CASSANDRA_SEEDS=cassandra1,cassandra2
-      - CASSANDRA_CLUSTER_NAME=cassandra-cluster-nbd
+      - CASSANDRA_CLUSTER_NAME=nbd-casssandra-cluster
       - CASSANDRA_DATACENTER=dc1
       - CASSANDRA_PASSWORD_SEEDER=yes
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
       - CASSANDRA_USER=cassandra
-      - CASSANDRA_PASSWORD=cassandrapassword
-    healthcheck:
-      test: ["CMD-SHELL","[$$(nodetool statusgossip)=running]"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+
   cassandra2:
     image: docker.io/bitnami/cassandra:latest
     hostname: cassandra2
@@ -35,33 +33,29 @@ services:
     volumes:
       - cassandra2_data:/bitnami
     networks:
-      cassandranet :
-        ipv4_address: 172.24.0.3
+      - cassandranet
     environment:
       - CASSANDRA_LISTEN_ADDRESS=cassandra2
       - CASSANDRA_BROADCAST_ADDRESS=cassandra2
       - CASSANDRA_SEEDS=cassandra1,cassandra2
-      - CASSANDRA_CLUSTER_NAME=cassandra-cluster-nbd
-      - CASSANDRA_DATACENTER=dc1
+      - CASSANDRA_CLUSTER_NAME=nbd-casssandra-cluster
+      - CASSANDRA_DATACENTER = dc1
       - CASSANDRA_PASSWORD_SEEDER=yes
       - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
-      - CASSANDRA_USER=cassandra
-      - CASSANDRA_PASSWORD=cassandrapassword
-    healthcheck:
-      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
+      - CASSANDRA_USER = cassandra
+      - CASSANDRA_PASSWORD = cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+
+networks:
+  cassandranet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
 
 volumes:
   cassandra1_data:
     driver: local
   cassandra2_data:
     driver: local
-networks:
-  cassandranet:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.24.0.0/16

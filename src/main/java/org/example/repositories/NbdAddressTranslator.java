@@ -1,4 +1,4 @@
-package org.example.canssandra_connection;
+package org.example.repositories;
 
 import com.datastax.oss.driver.api.core.addresstranslation.AddressTranslator;
 import com.datastax.oss.driver.api.core.context.DriverContext;

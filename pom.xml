@@ -13,52 +13,78 @@
         <maven.compiler.target>23</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencyManagement>
         <dependencies>
+            <!-- BOM dla zależności DataStax OSS -->
             <dependency>
                 <groupId>com.datastax.oss</groupId>
                 <artifactId>java-driver-bom</artifactId>
-                <version>4.15.0</version>
+                <version>4.17.0</version> <!-- Użyj odpowiedniej wersji -->
+                <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <dependencies>
+        <!-- Zależność do podstawowego jądra Cassandra Driver -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
-            <version>4.11.1</version>
         </dependency>
+
+        <!-- Zależność do buildera zapytań Cassandra -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-query-builder</artifactId>
-            <version>4.17.0</version>
         </dependency>
+
+        <!-- Zależność do runtime dla mappera -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-mapper-runtime</artifactId>
-            <version>4.17.0</version>
         </dependency>
+
+        <!-- Zależność do procesora adnotacji (do generowania kodu mapperów) -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-mapper-processor</artifactId>
-            <version>4.17.0</version>
+            <scope>provided</scope> <!-- Dzięki temu nie będzie włączona do finalnego artefaktu -->
         </dependency>
+
+        <!-- Zależność do Lombok do ułatwienia pisania kodu -->
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.12.5</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- Zależność do testów JUnit -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.3</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Zależność do Jackson do serializacji i deserializacji JSON -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.13</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -67,4 +93,165 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- Konfiguracja kompilatora Maven do obsługi procesora adnotacji -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>21</release> <!-- Użyj odpowiedniej wersji JDK -->
+                    <annotationProcessorPaths>
+                        <!-- Dodanie procesora adnotacji do generowania mapperów -->
+                        <path>
+                            <groupId>com.datastax.oss</groupId>
+                            <artifactId>java-driver-mapper-processor</artifactId>
+                            <version>4.17.0</version> <!-- Użyj odpowiedniej wersji -->
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
+
+
+
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<project xmlns="http://maven.apache.org/POM/4.0.0"-->
+<!--         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+<!--    <modelVersion>4.0.0</modelVersion>-->
+
+<!--    <groupId>org.example</groupId>-->
+<!--    <artifactId>nbd</artifactId>-->
+<!--    <version>1.0-SNAPSHOT</version>-->
+
+<!--    <properties>-->
+<!--        <maven.compiler.source>23</maven.compiler.source>-->
+<!--        <maven.compiler.target>23</maven.compiler.target>-->
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+<!--    </properties>-->
+
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>com.datastax.oss</groupId>-->
+<!--                <artifactId>java-driver-bom</artifactId>-->
+<!--                <version>4.17.0</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter</artifactId>-->
+<!--            <version>5.10.3</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-core</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-query-builder</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-mapper-runtime</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-mapper-processor</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <version>1.18.34</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--            <version>2.14.2</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>3.11.0</version>-->
+<!--                <configuration>-->
+<!--                    <release>21</release>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+<!--</project>-->
+
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>com.datastax.oss</groupId>-->
+<!--                <artifactId>java-driver-bom</artifactId>-->
+<!--                <version>4.15.0</version>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-core</artifactId>-->
+<!--            <version>4.17.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-query-builder</artifactId>-->
+<!--            <version>4.17.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-mapper-runtime</artifactId>-->
+<!--            <version>4.17.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.datastax.oss</groupId>-->
+<!--            <artifactId>java-driver-mapper-processor</artifactId>-->
+<!--            <version>4.17.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>joda-time</groupId>-->
+<!--            <artifactId>joda-time</artifactId>-->
+<!--            <version>2.12.5</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter</artifactId>-->
+<!--            <version>5.10.3</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-simple</artifactId>-->
+<!--            <version>2.0.13</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <version>1.18.34</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+

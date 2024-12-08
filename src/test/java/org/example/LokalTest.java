@@ -1,46 +1,41 @@
 package org.example;
 
-import org.example.model.Biuro;
-import org.example.model.Budynek;
+import org.example.model.Lokal;
 import org.example.model.Mieszkanie;
+import org.example.model.Biuro;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LokalTest {
+class LokalTest {
 
     @Test
-    public void testBudynekCzynszCalkowity_PiecLokali() {
-        Budynek budynek = new Budynek();
-        Mieszkanie mieszkanie1 = new Mieszkanie(60.0, 15.0);
-        Mieszkanie mieszkanie2 = new Mieszkanie(90.0, 14.0);
-        Mieszkanie mieszkanie3 = new Mieszkanie(40.0, 10.0);
-        Biuro biuro1 = new Biuro(20.0, 20.0, 140.0);
-        Biuro biuro2 = new Biuro(90.0, 30.0, 200.0);
-
-        budynek.dodajLokal(mieszkanie1);
-        budynek.dodajLokal(mieszkanie2);
-        budynek.dodajLokal(mieszkanie3);
-        budynek.dodajLokal(biuro1);
-        budynek.dodajLokal(biuro2);
-
-        assertEquals(6000.0, budynek.czynszCalkowity());
+    void testCzynszDlaMieszkania() {
+        Mieszkanie mieszkanie = new Mieszkanie(UUID.randomUUID(), 50, 20, 3);
+        double expectedCzynsz = 50 * 20; // Powierzchnia * Stawka
+        assertEquals(expectedCzynsz, mieszkanie.czynsz(), "Czynsz dla mieszkania jest niepoprawny.");
     }
 
     @Test
-    public void testBudynekZysk_PiecLokali() {
-        Budynek budynek = new Budynek();
-        Mieszkanie mieszkanie1 = new Mieszkanie(60.0, 15.0);
-        Mieszkanie mieszkanie2 = new Mieszkanie(90.0, 14.0);
-        Mieszkanie mieszkanie3 = new Mieszkanie(40.0, 10.0);
-        Biuro biuro1 = new Biuro(20.0, 20.0, 140.0);
-        Biuro biuro2 = new Biuro(90.0, 30.0, 200.0);
+    void testCzynszDlaBiura() {
+        Biuro biuro = new Biuro(UUID.randomUUID(), 100, 15, 500);
+        double expectedCzynsz = (100 * 15) + 500; // Powierzchnia * Stawka + Koszty dodatkowe
+        assertEquals(expectedCzynsz, biuro.czynsz(), "Czynsz dla biura jest niepoprawny.");
+    }
 
-        budynek.dodajLokal(mieszkanie1);
-        budynek.dodajLokal(mieszkanie2);
-        budynek.dodajLokal(mieszkanie3);
-        budynek.dodajLokal(biuro1);
-        budynek.dodajLokal(biuro2);
+    @Test
+    void testInformacjaMieszkania() {
+        Mieszkanie mieszkanie = new Mieszkanie(UUID.randomUUID(), 60, 25, 2);
+        String info = mieszkanie.informacja();
+        assertTrue(info.contains("Mieszkanie"), "Informacja powinna zawierać typ 'Mieszkanie'.");
+    }
 
-        assertEquals(3600.0, budynek.zysk(8.0));
+    @Test
+    void testUstawKosztyDodatkoweBiuro() {
+        Biuro biuro = new Biuro(UUID.randomUUID(), 80, 10, 300);
+        biuro.ustawKoszty(400);
+        assertEquals(400, biuro.dajKoszty(), "Koszty dodatkowe w biurze powinny zostać zaktualizowane.");
     }
 }
