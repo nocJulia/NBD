@@ -33,6 +33,8 @@ public class LokalCassandraRepository extends AbstractCassandraRepository {
                         .withColumn(CqlIdentifier.fromCql("liczba_pokoi"), DataTypes.INT)
                         .withColumn(CqlIdentifier.fromCql("powierzchnia_w_metrach"), DataTypes.DOUBLE)
                         .withColumn(CqlIdentifier.fromCql("typ"), DataTypes.TEXT)
+                        .withPartitionKey(CqlIdentifier.fromCql("budynek_id"), DataTypes.UUID)
+                        .withColumn(CqlIdentifier.fromCql("czynsz_calkowity"), DataTypes.DOUBLE)
                         .build();
 
         getSession().execute(createLokaleTable);

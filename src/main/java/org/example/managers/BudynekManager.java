@@ -13,7 +13,7 @@ public class BudynekManager {
         this.budynekDao = budynekDao;
     }
 
-    public void saveBudynek(Budynek budynek) {
+    public void addBudynek(Budynek budynek) {
         if (budynek.getId() == null) {
             budynek.setId(UUID.randomUUID());
         }

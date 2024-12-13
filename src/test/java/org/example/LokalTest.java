@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.model.Lokal;
 import org.example.model.Mieszkanie;
 import org.example.model.Biuro;
 import org.junit.jupiter.api.Test;
@@ -14,14 +13,14 @@ class LokalTest {
     @Test
     void testCzynszDlaMieszkania() {
         Mieszkanie mieszkanie = new Mieszkanie(UUID.randomUUID(), 50, 20, 3);
-        double expectedCzynsz = 50 * 20; // Powierzchnia * Stawka
+        double expectedCzynsz = 50 * 20;
         assertEquals(expectedCzynsz, mieszkanie.czynsz(), "Czynsz dla mieszkania jest niepoprawny.");
     }
 
     @Test
     void testCzynszDlaBiura() {
         Biuro biuro = new Biuro(UUID.randomUUID(), 100, 15, 500);
-        double expectedCzynsz = (100 * 15) + 500; // Powierzchnia * Stawka + Koszty dodatkowe
+        double expectedCzynsz = (100 * 15) + 500;
         assertEquals(expectedCzynsz, biuro.czynsz(), "Czynsz dla biura jest niepoprawny.");
     }
 

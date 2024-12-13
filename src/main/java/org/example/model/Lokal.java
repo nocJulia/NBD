@@ -72,6 +72,7 @@ public class Lokal {
     public double czynsz() {
         return 0;
     }
+
     public String informacja() {
         return "ID: " + id + " | Powierzchnia: " + powierzchnia_w_metrach + " m² | Stawka: " + stawka + " | Typ: " + typ;
     }

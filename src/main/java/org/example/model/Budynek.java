@@ -1,46 +1,51 @@
 package org.example.model;
 
-
 import com.datastax.oss.driver.api.mapper.annotations.CqlName;
 import com.datastax.oss.driver.api.mapper.annotations.Entity;
 import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
+import com.datastax.oss.driver.api.mapper.annotations.Transient;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(defaultKeyspace = "buildings")  // Określenie przestrzeni nazw bazy danych
-@CqlName("budynki")  // Określenie nazwy tabeli w Cassandra
+@Entity(defaultKeyspace = "buildings")
+@CqlName("budynki")
 public class Budynek {
-
     @PartitionKey
-    @CqlName("id")  // Klucz partycji
-    private UUID id;  // Unikalny identyfikator budynku
+    @CqlName("id")
+    private UUID id;
 
-    @CqlName("nazwa")  // Nazwa budynku
-    private String nazwa;  // Unikalny identyfikator budynku
+    @CqlName("nazwa")
+    private String nazwa;
 
-    @CqlName("lokale")  // Kolumna przechowująca listę lokali jako JSON
-    private String lokaleJson;  // Lista lokali zapisana w formacie JSON
+    @CqlName("lokale")
+    private String lokaleJson;
+
+    @Transient
+    private List<Lokal> lokale;
 
     public Budynek() {
-        // Konstruktor bez argumentów jest wymagany przez Cassandra
+        this.lokale = new ArrayList<>();
+        this.lokaleJson = "[]";
     }
 
     public Budynek(String nazwa) {
-        this.id = UUID.randomUUID();  // Generowanie losowego UUID dla budynku
+        this.id = UUID.randomUUID();
         this.nazwa = nazwa;
-        this.lokaleJson = "[]";  // Pusta lista lokali w formacie JSON
+        this.lokale = new ArrayList<>();
+        this.lokaleJson = "[]";
     }
 
     public Budynek(UUID id, String nazwa) {
         this.id = id;
         this.nazwa = nazwa;
-        this.lokaleJson = "[]";  // Pusta lista lokali w formacie JSON
+        this.lokale = new ArrayList<>();
+        this.lokaleJson = "[]";
     }
 
-    // Getter i Setter dla nazwy
     public String getNazwa() {
         return nazwa;
     }
@@ -49,7 +54,6 @@ public class Budynek {
         this.nazwa = nazwa;
     }
 
-    // Getter i Setter dla id
     public UUID getId() {
         return id;
     }
@@ -58,23 +62,39 @@ public class Budynek {
         this.id = id;
     }
 
-    // Getter i Setter dla listy lokali
     public List<Lokal> getLokale() {
-        // Deserializacja JSON na listę obiektów Lokal
-        Gson gson = new Gson();
-        return gson.fromJson(lokaleJson, List.class);
+        if (lokaleJson != null && !lokaleJson.isEmpty()) {
+            Gson gson = new Gson();
+            lokale = gson.fromJson(lokaleJson, new TypeToken<List<Lokal>>() {}.getType());
+        }
+        return lokale;
     }
 
     public void setLokale(List<Lokal> lokale) {
-        // Serializacja listy Lokali do JSON
+        this.lokale = lokale;
         Gson gson = new Gson();
         this.lokaleJson = gson.toJson(lokale);
     }
 
-    // Metoda do dodawania lokalu do budynku
     public void dodajLokal(Lokal lokal) {
-        List<Lokal> lokale = getLokale();
-        lokale.add(lokal);
-        setLokale(lokale);  // Zaktualizowanie JSON-a
+        if (this.lokale == null) {
+            this.lokale = new ArrayList<>();
+        }
+        this.lokale.add(lokal);
+        Gson gson = new Gson();
+        this.lokaleJson = gson.toJson(this.lokale);
+    }
+
+    public String getLokaleJson() {
+        return lokaleJson;
+    }
+
+    public void setLokaleJson(String lokaleJson) {
+        this.lokaleJson = lokaleJson;
+        // Optionally, update lokale list when JSON is set
+        if (lokaleJson != null && !lokaleJson.isEmpty()) {
+            Gson gson = new Gson();
+            this.lokale = gson.fromJson(lokaleJson, new TypeToken<List<Lokal>>() {}.getType());
+        }
     }
 }
