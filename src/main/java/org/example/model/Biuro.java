@@ -5,25 +5,24 @@ import com.datastax.oss.driver.api.mapper.annotations.Entity;
 
 import java.util.UUID;
 
-@Entity(defaultKeyspace = "buildings")  // Określenie odpowiedniego keyspace
-@CqlName("biura")  // Określenie nazwy tabeli w bazie danych
+@Entity(defaultKeyspace = "buildings")
+@CqlName("biura")
 public class Biuro extends Lokal {
 
-    @CqlName("koszty_dodatkowe")  // Kolumna na dodatkowe koszty
+    @CqlName("koszty_dodatkowe")
     private double kosztyDodatkowe;
 
     public Biuro() {
-        super(); // Konstruktor domyślny wymagany przez Cassandra
+        super();
     }
 
-    public Biuro(UUID id, double powierzchnia, double stawka, double kosztyDodatkowe) {
-        super(id, powierzchnia, stawka, "Biuro");  // Przekazujemy typ "Biuro" do klasy nadrzędnej
+    public Biuro(UUID id, double powierzchnia_w_metrach, double stawka, double kosztyDodatkowe) {
+        super(id, powierzchnia_w_metrach, stawka, "Biuro");
         this.kosztyDodatkowe = kosztyDodatkowe;
     }
 
     @Override
     public double czynsz() {
-        // Obliczanie czynszu uwzględnia powierzchnię, stawkę oraz dodatkowe koszty
         return (getPowierzchnia_w_metrach() * getStawka()) + dajKoszty();
     }
 
@@ -39,11 +38,9 @@ public class Biuro extends Lokal {
 
     @Override
     public String informacja() {
-        // Nadpisanie metody informacja() z klasy nadrzędnej
         return "[Biuro] " + super.informacja() + " Koszty dodatkowe: " + kosztyDodatkowe;
     }
 
-    // Gettery i settery dla Cassandra
     public double getKosztyDodatkowe() {
         return kosztyDodatkowe;
     }

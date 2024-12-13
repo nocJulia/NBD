@@ -4,20 +4,19 @@ import com.datastax.oss.driver.api.mapper.annotations.CqlName;
 import com.datastax.oss.driver.api.mapper.annotations.Entity;
 import java.util.UUID;
 
-@Entity(defaultKeyspace = "buildings")  // Użyj odpowiedniego keyspace
-@CqlName("mieszkania")  // Nazwa tabeli w bazie danych
+@Entity(defaultKeyspace = "buildings")
+@CqlName("mieszkania")
 public class Mieszkanie extends Lokal {
 
     @CqlName("liczba_pokoi")
-    private int liczbaPokoi;  // Dodajemy pole liczba pokoi
+    private int liczbaPokoi;
 
-    public Mieszkanie(UUID id, double powierzchnia, double stawka, int liczbaPokoi) {
-        super(id, powierzchnia, stawka, "Mieszkanie");  // Typ ustawiony na "Mieszkanie"
+    public Mieszkanie(UUID id, double powierzchnia_w_metrach, double stawka, int liczbaPokoi) {
+        super(id, powierzchnia_w_metrach, stawka, "Mieszkanie");
         this.liczbaPokoi = liczbaPokoi;
     }
 
     public Mieszkanie() {
-        // Konstruktor domyślny
     }
 
     public int getLiczbaPokoi() {
@@ -30,13 +29,11 @@ public class Mieszkanie extends Lokal {
 
     @Override
     public double czynsz() {
-        // Obliczanie czynszu zależne od powierzchni i stawki, możesz dodać logikę z liczbaPokoi
         return getPowierzchnia_w_metrach() * getStawka();  // Przykład z mnożnikiem
     }
 
     @Override
     public String informacja() {
-        // Dodanie specyficznych informacji o mieszkaniu
         return "[Mieszkanie] " + super.informacja() + " | Liczba pokoi: " + liczbaPokoi;
     }
 }

@@ -23,18 +23,18 @@ public class LokalCassandraRepository extends AbstractCassandraRepository {
     }
 
     private void createTable() {
-        // Tworzenie zapytania dla tabeli "lokale"
         SimpleStatement createLokaleTable =
                 SchemaBuilder.createTable(CqlIdentifier.fromCql("lokale"))
                         .ifNotExists() // Jeśli tabela już istnieje, nie twórz jej ponownie
                         .withPartitionKey(CqlIdentifier.fromCql("id"), DataTypes.UUID)
-                        .withColumn(CqlIdentifier.fromCql("powierzchnia"), DataTypes.DOUBLE)
                         .withColumn(CqlIdentifier.fromCql("stawka"), DataTypes.DOUBLE)
                         .withColumn(CqlIdentifier.fromCql("koszty_dodatkowe"), DataTypes.DOUBLE)
                         .withColumn(CqlIdentifier.fromCql("discriminator"), DataTypes.TEXT)
+                        .withColumn(CqlIdentifier.fromCql("liczba_pokoi"), DataTypes.INT)
+                        .withColumn(CqlIdentifier.fromCql("powierzchnia_w_metrach"), DataTypes.DOUBLE)
+                        .withColumn(CqlIdentifier.fromCql("typ"), DataTypes.TEXT)
                         .build();
 
-        // Wykonanie zapytania
         getSession().execute(createLokaleTable);
     }
 

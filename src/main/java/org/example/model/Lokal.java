@@ -6,11 +6,11 @@ import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
 
 import java.util.UUID;
 
-@Entity(defaultKeyspace = "buildings")  // Zmieniamy na odpowiednią nazwę keyspace
-@CqlName("lokale")  // Ustawiamy nazwę tabeli w bazie danych
+@Entity(defaultKeyspace = "buildings")
+@CqlName("lokale")
 public class Lokal {
 
-    @PartitionKey  // Klucz partycji, identyfikator lokalu
+    @PartitionKey
     @CqlName("id")
     private UUID id;
 
@@ -21,7 +21,7 @@ public class Lokal {
     private double stawka;
 
     @CqlName("typ")
-    private String typ;  // Możesz dodać pole dla typu lokalu, np. mieszkanie, biuro
+    private String typ;
 
     public Lokal(UUID id, double powierzchnia, double stawka, String typ) {
         this.id = id;
@@ -31,7 +31,6 @@ public class Lokal {
     }
 
     public Lokal() {
-        // Konstruktor domyślny, wymagany przez bibliotekę mappera
     }
 
     public UUID getId() {
@@ -70,12 +69,9 @@ public class Lokal {
         this.typ = typ;
     }
 
-    // Metoda obliczająca czynsz, zależna od implementacji konkretnej klasy (np. Mieszkanie, Biuro)
     public double czynsz() {
         return 0;
     }
-
-    // Metoda informacyjna
     public String informacja() {
         return "ID: " + id + " | Powierzchnia: " + powierzchnia_w_metrach + " m² | Stawka: " + stawka + " | Typ: " + typ;
     }

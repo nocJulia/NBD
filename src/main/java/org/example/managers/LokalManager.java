@@ -24,10 +24,6 @@ public class LokalManager {
         return Optional.ofNullable(lokalDao.findById(id));
     }
 
-//    public void updateLokal(Lokal lokal) {
-//        lokalDao.update(lokal);
-//    }
-
     public boolean deleteLokal(Lokal lokal) {
         return lokalDao.delete(lokal);
     }
