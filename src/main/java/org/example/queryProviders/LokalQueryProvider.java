@@ -58,6 +58,40 @@ public class LokalQueryProvider {
         return lokal;
     }
 
+    public void update(Lokal lokal) {
+        session.execute(
+                switch (lokal.getTyp()) {
+                    case "Mieszkanie" -> {
+                        Mieszkanie mieszkanie = (Mieszkanie) lokal;
+                        yield session.prepare("UPDATE lokale SET " +
+                                        "powierzchnia_w_metrach = ?, " +
+                                        "stawka = ?, " +
+                                        "liczba_pokoi = ? " +
+                                        "WHERE id = ?")
+                                .bind()
+                                .setDouble(0, mieszkanie.getPowierzchnia_w_metrach())
+                                .setDouble(1, mieszkanie.getStawka())
+                                .setInt(2, mieszkanie.getLiczbaPokoi())
+                                .setUuid(3, mieszkanie.getId());
+                    }
+                    case "Biuro" -> {
+                        Biuro biuro = (Biuro) lokal;
+                        yield session.prepare("UPDATE lokale SET " +
+                                        "powierzchnia_w_metrach = ?, " +
+                                        "stawka = ?, " +
+                                        "koszty_dodatkowe = ? " +
+                                        "WHERE id = ?")
+                                .bind()
+                                .setDouble(0, biuro.getPowierzchnia_w_metrach())
+                                .setDouble(1, biuro.getStawka())
+                                .setDouble(2, biuro.dajKoszty())
+                                .setUuid(3, biuro.getId());
+                    }
+                    default -> throw new IllegalArgumentException("Nieznany typ lokalu: " + lokal.getTyp());
+                }
+        );
+    }
+
     public Lokal findById(UUID id) {
         Row row = session.execute(
                 QueryBuilder.selectFrom(CqlIdentifier.fromCql("lokale"))

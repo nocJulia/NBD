@@ -22,6 +22,11 @@ public interface LokalDao {
             entityHelpers = {Mieszkanie.class, Biuro.class})
     Lokal save(Lokal lokal);
 
+    @StatementAttributes(consistencyLevel = "QUORUM")
+    @QueryProvider(providerClass = LokalQueryProvider.class,
+            entityHelpers = {Mieszkanie.class, Biuro.class})
+    void update(Lokal lokal);
+
     @StatementAttributes(consistencyLevel = "ONE")
     @Delete
     boolean delete(Lokal lokal);

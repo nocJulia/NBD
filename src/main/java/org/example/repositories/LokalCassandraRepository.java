@@ -50,7 +50,7 @@ public class LokalCassandraRepository extends AbstractCassandraRepository {
     }
 
     public void updateLokal(Lokal lokal) {
-        lokalDao.save(lokal);
+        lokalDao.update(lokal);
     }
 
     public boolean deleteLokal(Lokal lokal) {
