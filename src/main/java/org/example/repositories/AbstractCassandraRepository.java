@@ -23,6 +23,7 @@ public class AbstractCassandraRepository {
                 .addContactPoint(new InetSocketAddress("cassandra1", 9042))
                 .addContactPoint(new InetSocketAddress("cassandra2", 9043))
                 .withLocalDatacenter("dc1")
+                //ponizsza linijke nalezy zakomentowac przy pierwszym uruchomieniu
                 .withKeyspace(CqlIdentifier.fromCql("buildings"))
                 .withAuthCredentials("cassandra", "cassandra")
                 .build();
