@@ -8,8 +8,6 @@ import org.example.dao.BudynekDao;
 import org.example.mappers.BudynekMapper;
 import org.example.mappers.BudynekMapperBuilder;
 import org.example.model.Budynek;
-import org.example.model.Lokal;
-
 import java.util.UUID;
 
 public class BudynekCassandraRepository extends AbstractCassandraRepository {
@@ -23,7 +21,6 @@ public class BudynekCassandraRepository extends AbstractCassandraRepository {
         budynekDao = budynekMapper.budynekDao(CqlIdentifier.fromCql("buildings"), "budynki");
     }
 
-    // Tworzymy zapytanie do stworzenia tabeli "budynki"
     private void createTable() {
         SimpleStatement createBudynekTable =
                 SchemaBuilder.createTable(CqlIdentifier.fromCql("budynki"))

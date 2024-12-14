@@ -28,6 +28,8 @@ public class Budynek {
     private List<Lokal> lokale;
 
     public Budynek() {
+        this.id = UUID.randomUUID();
+        this.nazwa = "";
         this.lokale = new ArrayList<>();
         this.lokaleJson = "[]";
     }
@@ -72,8 +74,7 @@ public class Budynek {
 
     public void setLokale(List<Lokal> lokale) {
         this.lokale = lokale;
-        Gson gson = new Gson();
-        this.lokaleJson = gson.toJson(lokale);
+        updateLokaleJson();
     }
 
     public void dodajLokal(Lokal lokal) {
@@ -81,6 +82,17 @@ public class Budynek {
             this.lokale = new ArrayList<>();
         }
         this.lokale.add(lokal);
+        updateLokaleJson();
+    }
+
+    public void usunLokal(Lokal lokal) {
+        if (this.lokale != null) {
+            this.lokale.remove(lokal);
+            updateLokaleJson();
+        }
+    }
+
+    private void updateLokaleJson() {
         Gson gson = new Gson();
         this.lokaleJson = gson.toJson(this.lokale);
     }
@@ -91,10 +103,10 @@ public class Budynek {
 
     public void setLokaleJson(String lokaleJson) {
         this.lokaleJson = lokaleJson;
-        // Optionally, update lokale list when JSON is set
         if (lokaleJson != null && !lokaleJson.isEmpty()) {
             Gson gson = new Gson();
             this.lokale = gson.fromJson(lokaleJson, new TypeToken<List<Lokal>>() {}.getType());
         }
     }
 }
+

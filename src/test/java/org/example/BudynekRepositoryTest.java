@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.model.Biuro;
 import org.example.model.Budynek;
 import org.example.model.Lokal;
 import org.example.repositories.BudynekCassandraRepository;
@@ -7,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,6 +58,30 @@ class BudynekRepositoryTest {
     }
 
     @Test
+    void testAddLokal() {
+        Budynek budynek = budynekRepository.getBudynek(budynekId);
+        Lokal biuro = new Biuro(UUID.randomUUID(), 100.0, 30.0, 50.0);
+        budynek.dodajLokal(biuro);
+
+        assertNotNull(budynek);
+        assertEquals(1, budynek.getLokale().size());
+        assertEquals("Biuro", budynek.getLokale().get(0).getTyp());
+    }
+
+    @Test
+    void testRemoveLokal() {
+        Budynek budynek = budynekRepository.getBudynek(budynekId);
+        Lokal biuro = new Biuro(UUID.randomUUID(), 100.0, 30.0, 50.0);
+        budynek.dodajLokal(biuro);
+
+        budynek.getLokale().remove(0);
+
+        Budynek retrievedBudynek = budynekRepository.getBudynek(budynekId);
+        assertNotNull(retrievedBudynek);
+        assertEquals(0, retrievedBudynek.getLokale().size());
+    }
+
+    @Test
     void testDeleteBudynek() {
         Budynek budynek = budynekRepository.getBudynek(budynekId);
         boolean deleted = budynekRepository.deleteBudynek(budynek);
@@ -67,4 +91,5 @@ class BudynekRepositoryTest {
         Budynek deletedBudynek = budynekRepository.getBudynek(budynekId);
         assertNull(deletedBudynek);
     }
+
 }
