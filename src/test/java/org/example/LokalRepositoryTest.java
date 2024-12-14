@@ -62,24 +62,18 @@ public class LokalRepositoryTest {
 
     @Test
     void testUpdateLokal() {
-        // Tworzymy nowy obiekt Mieszkania z unikalnym ID
         UUID id = UUID.randomUUID();
         Mieszkanie mieszkanie = new Mieszkanie(id, 55.0, 2500.0, 4);
 
-        // Dodajemy mieszkanie do bazy
         repository.addLokal(mieszkanie);
 
-        // Modyfikujemy dane mieszkania
         mieszkanie.setPowierzchnia_w_metrach(60.0);
         mieszkanie.setStawka(2700.0);
 
-        // Przechodzimy do aktualizacji
         repository.updateLokal(mieszkanie);
 
-        // Pobieramy zaktualizowane mieszkanie z bazy
         Lokal retrieved = repository.getLokal(id);
 
-        // Sprawdzamy, czy mieszkanie zostało zaktualizowane
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Mieszkanie);
         Mieszkanie updatedMieszkanie = (Mieszkanie) retrieved;
