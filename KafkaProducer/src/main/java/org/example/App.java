@@ -43,7 +43,6 @@ public class App {
                 e.printStackTrace();
             }
 
-            // Wydrukowanie zawartości baz danych (MongoDB)
             shop.getRepository().getDatabase().getCollection("clients").find().forEach(System.out::println);
             shop.getRepository().getDatabase().getCollection("buildings").find().forEach(System.out::println);
             shop.getRepository().getDatabase().getCollection("transactions").find().forEach(System.out::println);

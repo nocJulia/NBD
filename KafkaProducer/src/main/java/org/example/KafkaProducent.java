@@ -22,18 +22,20 @@ public class KafkaProducent {
 
     public KafkaProducent() throws ExecutionException, InterruptedException {
         initProducer();
+        createTopic();
     }
 
-    public static void initProducer() throws ExecutionException, InterruptedException {
-        Properties producerConfig = new Properties();
-        producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class.getName());
-        producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "local");
-        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "kafka1:9192,kafka2:9292,kafka3:9392");
-        producerConfig.put(ProducerConfig.ACKS_CONFIG, "all");
-        producerConfig.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
-        kafkaProducer = new KafkaProducer<>(producerConfig);
+    private static void initProducer() {
+        if (kafkaProducer == null) {
+            Properties producerConfig = new Properties();
+            producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class.getName());
+            producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+            producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, "local");
+            producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9192,kafka2:9292,kafka3:9392");
+            producerConfig.put(ProducerConfig.ACKS_CONFIG, "all");
+            producerConfig.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+            kafkaProducer = new KafkaProducer<>(producerConfig);
+        }
     }
 
     public KafkaProducer<UUID, String> getKafkaProducer() {
@@ -41,7 +43,6 @@ public class KafkaProducent {
     }
 
     public void sendTransactionAsync(Transaction transaction) throws InterruptedException {
-        createTopic();
         Jsonb jsonb = JsonbBuilder.create();
         Callback callback = this::onCompletion;
 
@@ -54,11 +55,12 @@ public class KafkaProducent {
         kafkaProducer.send(record, callback);
     }
 
-    private void onCompletion(RecordMetadata data, Exception exception) {
+    private void onCompletion(RecordMetadata metadata, Exception exception) {
         if (exception == null) {
-            System.out.println(data.offset());
+            System.out.printf("Message sent to topic=%s, partition=%d, offset=%d%n",
+                    metadata.topic(), metadata.partition(), metadata.offset());
         } else {
-            System.out.println(exception);
+            System.err.println("Error sending message: " + exception.getMessage());
         }
     }
 
@@ -81,4 +83,13 @@ public class KafkaProducent {
             System.out.println("Topic already exists" + e.getCause());
         }
     }
+
+    public void close() {
+        if (kafkaProducer != null) {
+            kafkaProducer.close();
+        }
+    }
 }
+
+
+

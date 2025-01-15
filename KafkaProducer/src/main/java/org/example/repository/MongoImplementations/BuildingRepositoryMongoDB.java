@@ -15,9 +15,8 @@ import java.util.UUID;
 public class BuildingRepositoryMongoDB implements BuildingRepository {
 
     private final MongoCollection<Building> mongoCollection;
-    private final MongoClient mongoClient;  // MongoClient to create the session
+    private final MongoClient mongoClient;
 
-    // Konstruktor przyjmujący MongoClient i MongoCollection
     public BuildingRepositoryMongoDB(MongoCollection<Building> mongoCollection, MongoClient mongoClient) {
         this.mongoCollection = mongoCollection;
         this.mongoClient = mongoClient;
@@ -27,8 +26,8 @@ public class BuildingRepositoryMongoDB implements BuildingRepository {
     public Building saveBuilding(Building building) {
         mongoCollection.updateOne(
                 Filters.eq("_id", building.getId()),
-                new Document("$set", building), // Aktualizuj wszystkie pola
-                new UpdateOptions().upsert(true) // Jeśli brak, wstaw nowy
+                new Document("$set", building),
+                new UpdateOptions().upsert(true)
         );
         return building;
     }
@@ -64,9 +63,7 @@ public class BuildingRepositoryMongoDB implements BuildingRepository {
         return deletedBuilding != null;
     }
 
-    // Tworzymy sesję za pomocą MongoClient
     public ClientSession getClientSession() {
-        return mongoClient.startSession();  // Uzyskujemy sesję z MongoClient
-    }
+        return mongoClient.startSession();}
 }
 

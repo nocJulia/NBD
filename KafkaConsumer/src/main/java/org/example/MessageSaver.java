@@ -14,18 +14,18 @@ public class MessageSaver {
             MongoRepo repo = new MongoRepo();
             this.mongoCollection = repo.getDatabase().getCollection("buildings_message_db");
         } catch (MongoException e) {
-            throw new MongoDBException("Error while creating database");
+            throw new MongoDBException("Error while creating database"+ e.getMessage());
         }
     }
 
 
-    public void saveToMongo(String message){
-        Document jsonDocument = new Document()
-                .append("reservations", message);
-
-
-        mongoCollection.insertOne(jsonDocument);
-        System.out.println("Saved to database");
-
+    public synchronized void saveToMongo(String message) {
+        try {
+            Document jsonDocument = new Document().append("reservations", message);
+            mongoCollection.insertOne(jsonDocument);
+            System.out.println("Saved to database: " + message);
+        } catch (MongoException e) {
+            System.err.println("Error saving to MongoDB: " + e.getMessage());
+        }
     }
 }

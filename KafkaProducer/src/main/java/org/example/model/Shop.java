@@ -23,23 +23,21 @@ public class Shop implements AutoCloseable {
     private final LocalManager localManager;
 
     public Shop() throws ExecutionException, InterruptedException {
-        repository = new AbstractMongoRepository();  // Tworzymy repozytorium
-        createBuildingCollectionWithValidations();  // Tworzymy kolekcję dla budynków
-        createTransactionCollectionWithValidations();  // Tworzymy kolekcję dla transakcji
-        createClientCollectionWithValidations(); // Tworzymy kolekcję dla klientów
+        repository = new AbstractMongoRepository();
+        createBuildingCollectionWithValidations();
+        createTransactionCollectionWithValidations();
+        createClientCollectionWithValidations();
         createLocalCollectionWithValidations();
 
-        // Inicjalizujemy menedżery
         clientManager = new ClientManager(repository.getDatabase().getCollection("clients", Client.class));
 
-        // Zamiast twórczości obiektów kolekcji i klienta, przekazujemy odpowiednie zależności
         MongoCollection<Building> buildingCollection = repository.getDatabase().getCollection("buildings", Building.class);
         MongoCollection<Client> clientCollection = repository.getDatabase().getCollection("clients", Client.class);
         MongoCollection<Transaction> transactionCollection = repository.getDatabase().getCollection("transactions", Transaction.class);
         MongoCollection<Local> localCollection = repository.getDatabase().getCollection("local", Local.class);
 
-        buildingManager = new BuildingManager(buildingCollection, repository.getMongoClient());  // Przekazujemy kolekcję budynków oraz klienta
-        transactionManager = new TransactionManager(transactionCollection, buildingCollection, clientCollection, repository.getMongoClient()); // Inicjalizujemy TransactionManager
+        buildingManager = new BuildingManager(buildingCollection, repository.getMongoClient());
+        transactionManager = new TransactionManager(transactionCollection, buildingCollection, clientCollection, repository.getMongoClient());
         localManager = new LocalManager(localCollection);
     }
 
