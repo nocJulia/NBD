@@ -74,7 +74,7 @@ public class KafkaConsumerManager {
                     messageSaver.saveToMongo(record.value());
                     System.out.println(result);
 
-                    consumer.commitAsync(); // zapewnienie, że dane będą dostarczone tylko 1 raz
+                    consumer.commitAsync();
                 }
             }
         } catch (WakeupException we) {
